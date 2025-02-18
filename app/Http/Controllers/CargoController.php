@@ -94,20 +94,25 @@ class CargoController extends Controller
 
    
     public function edit($id)
-    {
+    {   $empleadoscargo = EmpleadoCargo::join('empleados as E', 'E.id', '=', 'empleado_cargo.empleado_id')
+        ->join('users as U', 'U.id', '=', 'E.user_id')
+        ->join('roles as R', 'R.id', '=', 'U.role_id')
+        ->where('empleado_cargo.cargo_id', $id)
+        ->select('empleado_cargo.empleado_id', 'empleado_cargo.cargo_id', 'E.identificacion', 'E.jefe', 'R.name as rol')
+        ->firstOrFail();
         $cargo = Cargo::find($id);
         $empleados = Empleado::all(); 
-    
-        return view('cargos.edit', compact('cargo', 'empleados'));
+             
+        return view('cargos.edit', compact('cargo', 'empleados','empleadoscargo'));
     }
 
     // Método para actualizar un cargo
-    public function update(Request $request, $id)
-    {  
-    
+    public function update(Request $request)
+    {   //dd($request->all());
+       $id=$request->empleado_id;
         try {
             DB::transaction(function () use ($request, $id) {
-                dd($request->all());
+                //dd($request->all());
                 $cargo = Cargo::find($request->cargo_id);  
     
               
@@ -157,12 +162,13 @@ class CargoController extends Controller
         }
     }
 
-    // Método para eliminar un cargo
+   
     public function destroy($id)
-    {
+    {  //dd($id);
         $cargo = Cargo::find($id);
-        $cargo->delete();  // Eliminar cargo
-        return redirect()->route('cargos.index')->with('success', 'Cargo eliminado exitosamente.');
+       // dd($cargo);
+        $cargo->delete(); 
+       //return redirect()->route('cargos.index')->with('success', 'Cargo eliminado exitosamente.');
     }
 
     public  function geempleadoidentificacion($id){

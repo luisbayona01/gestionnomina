@@ -185,30 +185,31 @@ document.addEventListener("DOMContentLoaded", function () {
 document.getElementById("Editarcargos").addEventListener("click", function (event) {
                 event.preventDefault();
  
-
+    // Obtener el formulario
     let form = document.getElementById("formeditcargos");
     
+    // Validación del formulario
     if (!form.checkValidity()) {
         form.classList.add("was-validated");
         return;
     }
-    
+
+    // Crear el FormData con los datos del formulario
     let formData = new FormData(form);
-    let cargoId = form.querySelector('input[name="cargo_id"]').value;
-    
-    fetch(`/cargos/${cargoId}`, {
-        method: "PUT",
+
+   
+ fetch(`/cargos/update`, {  
+        method: "POST",  
         headers: {
             "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
-            // Removemos el Content-Type para que FormData funcione correctamente
         },
-        body: formData
+        body: formData,
     })
     .then(response => response.json())
     .then(data => {
         if (data.status === 'success') {
-            toastr.success(data.message);
-            location.reload();
+            toastr.success(data.message);  
+            location.reload();  
         } else {
             toastr.error(data.message || "Hubo un error al actualizar el cargo.");
         }
@@ -304,7 +305,7 @@ $("#searchIdentificacion").on("keyup", function () {
     });
 });
 
-$("#searchDireccion").on("keyup", function () {
+$("#searchArea").on("keyup", function () {
     var value = $(this).val().toLowerCase();
     $("#tablaEmpleados tbody tr").filter(function () {
    
@@ -322,7 +323,7 @@ $("#searchDireccion").on("keyup", function () {
 
 
 
-$("#searchTelefono").on("keyup", function () {
+$("#searchCargo").on("keyup", function () {
     var value = $(this).val().toLowerCase();
     $("#tablaEmpleados tbody tr").filter(function () {
 
@@ -338,7 +339,7 @@ $("#searchTelefono").on("keyup", function () {
 });
 
 
-$("#searchCiudad").on("keyup", function () {
+$("#searchRol").on("keyup", function () {
     var value = $(this).val().toLowerCase();
     $("#tablaEmpleados tbody tr").filter(function () {
 
@@ -355,7 +356,7 @@ $("#searchCiudad").on("keyup", function () {
 });
 
 
-$("#searchDepartamento").on("keyup", function () {
+$("#searchJefe").on("keyup", function () {
     var value = $(this).val().toLowerCase();
     $("#tablaEmpleados tbody tr").filter(function () {
    
@@ -409,10 +410,35 @@ function Deleempleado(id, nombre) {
    
     document.getElementById("userName").textContent = nombre;
 
-    document.getElementById("confirmDelete").href = "/empleados/eliminar/" + id;
+    //document.getElementById("confirmDelete").href = "/empleados/eliminar/" + id;
+    document.getElementById("confirmDelete").onclick = function() {
+   let   url='/cargos/'+id
+            fetch(url, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') // CSRF Token
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        //console.log('El cargo fue eliminado:', data);
+                        location.reload(); 
+                        // Actualiza la vista o redirige si es necesario
+                    })
+                    .catch(error => {
+                        console.error('Hubo un error:', error);
+                    });
 
-       $('#deleteModal').modal('show');
+                    location.reload(); 
+    }
+    
+    $('#deleteModal').modal('show');
+    
 }
+
+       
+
 
 </script>
 
@@ -423,7 +449,7 @@ function Deleempleado(id, nombre) {
                 <button class="btn btn-outline-secondary me-2">
                     <i class="fa fa-trash"></i> Borrar selección
                 </button>
-                <a href="{{ route('generar-informe-empleados') }}" class="btn btn-outline-secondary">
+                <a href="{{ route('generar-informe-cargos') }}" class="btn btn-outline-secondary">
     <i class="fa fa-download"></i> Descargar datos
 </a>
             </div>
@@ -481,25 +507,25 @@ function Deleempleado(id, nombre) {
                             <td>
                                 <div class="input-icon-container">
                                     <i class="fa fa-search" aria-hidden="true"></i>
-                                    <input type="text" class="search-input" placeholder="Buscar por dirección" id="searchDireccion">
+                                    <input type="text" class="search-input" placeholder="Buscar por area" id="searchArea">
                                 </div>
                             </td>
                             <td>
                                 <div class="input-icon-container">
                                     <i class="fa fa-search" aria-hidden="true"></i>
-                                    <input type="text" class="search-input" placeholder="Buscar por teléfono" id="searchTelefono">
+                                    <input type="text" class="search-input" placeholder="Buscar por cargo" id="searchCargo">
                                 </div>
                             </td>
                             <td>
                                 <div class="input-icon-container">
                                     <i class="fa fa-search" aria-hidden="true"></i>
-                                    <input type="text" class="search-input" placeholder="Buscar por ciudad" id="searchCiudad">
+                                    <input type="text" class="search-input" placeholder="Buscar por rol" id="searchRol">
                                 </div>
                             </td>
                             <td>
                                 <div class="input-icon-container">
                                     <i class="fa fa-search" aria-hidden="true"></i>
-                                    <input type="text" class="search-input" placeholder="Buscar por departamento" id="searchDepartamento">
+                                    <input type="text" class="search-input" placeholder="Buscar por departamento" id="searchJefe">
                                 </div>
                             </td>
                                 <td></td>

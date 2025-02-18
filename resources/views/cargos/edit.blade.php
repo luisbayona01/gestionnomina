@@ -1,4 +1,4 @@
-<form method="POST" role="form" enctype="multipart/form-data" class="needs-validation" novalidate id="formeditcargos">
+<form  class="needs-validation" novalidate id="formeditcargos">
   
     <input  type="hidden"  name="cargo_id" value="{{ $cargo->id }}">
     <div class="row">
@@ -8,7 +8,7 @@
                 <select name="empleado_id" class="form-select" id="empleado_idE" required>
                     <option value="0">Seleccione un empleado</option>
                     @foreach($empleados as $emp)
-                        <option value="{{ $emp->id }}" {{ $emp->id == $cargo->empleado_id ? 'selected' : '' }}>
+                        <option value="{{ $emp->id }}" {{ $emp->id == $empleadoscargo->empleado_id ? 'selected' : '' }}>
                             {{ $emp->nombres }}
                         </option>
                     @endforeach
@@ -20,7 +20,7 @@
             <div class="mb-3">
                 <label class="form-label">Identificación</label>
                 <input type="text" name="identificacion" class="form-control" id="identificacionE"
-                       value="{{ $cargo->identificacion }}" readonly>
+                       value="{{ $empleadoscargo->identificacion }}" readonly>
                 <div class="invalid-feedback">
                     La Identificación es requerida
                 </div>
@@ -58,9 +58,9 @@
                 <label class="form-label">Rol</label>
                 <select class="form-select" name="rol" required>
                     <option value="">Seleccione un rol</option>
-                    <option value="empleado" {{ $cargo->rol == 'empleado' ? 'selected' : '' }}>Empleado</option>
-                    <option value="colaborador" {{ $cargo->rol == 'colaborador' ? 'selected' : '' }}>Colaborador</option>
-                    <option value="jefe" {{ $cargo->rol == 'jefe' ? 'selected' : '' }}>Jefe</option>
+                    <option value="empleado" {{ $empleadoscargo->rol == 'empleado' ? 'selected' : '' }}>Empleado</option>
+                    <option value="colaborador" {{ $empleadoscargo->rol == 'colaborador' ? 'selected' : '' }}>Colaborador</option>
+                    <option value="jefe" {{ $empleadoscargo->rol == 'jefe' ? 'selected' : '' }}>Jefe</option>
                 </select>
                 <div class="invalid-feedback">
                     Seleccione un rol
@@ -72,7 +72,7 @@
             <div class="mb-3">
                 <label class="form-label">Jefe</label>
                 <input type="text" name="jefe" class="form-control" placeholder="Escribe una dirección"
-                       value="{{ old('jefe', $cargo->jefe) }}" required>
+                       value="{{ old('jefe', $empleadoscargo->jefe) }}" required>
                 <div class="invalid-feedback">
                     El jefe es requerido
                 </div>
