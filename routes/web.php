@@ -32,3 +32,4 @@ Route::post('/empleados/update', [EmpleadoController::class, 'update'])->name('e
 Route::get('/empleados/eliminar/{id}', [EmpleadoController::class, 'destroy'])->name('empleados.eliminar');
 Route::get('generar-informe-empleados', [ReportController::class, 'generarInforme'])->name('generar-informe-empleados');
 Route::resource('cargos', CargoController::class);
+Route::get('/cargos/{id}/empleados', [CargoController::class, 'geempleadoidentificacion'])->name('cargos.empleados');

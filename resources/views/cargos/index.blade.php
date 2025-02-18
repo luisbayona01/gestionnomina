@@ -139,8 +139,8 @@
 
 document.addEventListener("DOMContentLoaded", function () {
  
-                document.getElementById("create-empleado").addEventListener("click", function () {
-                    fetch("/empleados/create")
+                document.getElementById("create-cargo").addEventListener("click", function () {
+                    fetch("/cargos/create")
                         .then(response => response.text())
                         .then(html => {
                             document.getElementById("modal-body").innerHTML = html;
@@ -149,8 +149,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 });
 
 
-            document.getElementById("saveempleado").addEventListener("click", function () {
-                                const form = document.getElementById("formcreateEmpleados");
+            document.getElementById("savecargo").addEventListener("click", function () {
+                                const form = document.getElementById("formcreatecargos");
 
                                 // Verifica si el formulario es válido
                                 if (!form.checkValidity()) {
@@ -161,7 +161,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                 // Si es válido, enviamos por AJAX
                                 const formData = new FormData(form);
 
-                                fetch("{{ route('empleados.store') }}", {
+                                fetch("{{ route('cargos.store') }}", {
                                     method: "POST",
                                     body: formData,
                                     headers: {
@@ -182,81 +182,77 @@ document.addEventListener("DOMContentLoaded", function () {
 
     
 
-            document.getElementById("Editarempleado").addEventListener("click", function (event) {
-                    event.preventDefault();
-                    let form = document.getElementById("formeditarEmpleados");
+document.getElementById("Editarcargos").addEventListener("click", function (event) {
+                event.preventDefault();
+ 
 
-                    if (!form.checkValidity()) {
-                        form.classList.add("was-validated");
-                        return;
-                    }
-
-                    let formData = new FormData(form);
-
-                    fetch("{{ route('empleados.update') }}", {
-                        method: "POST",
-                        headers: {
-                            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
-                        },
-                        body: formData,
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.message) {
-                            toastr.success(data.message);
-                            location.reload(); 
-                        } else {
-                            toastr.error("Hubo un error al actualizar el empleado.");
-                        }
-                    })
-                    .catch(error => {
-                        toastr.error("Error en el servidor.");
-                        console.error("Error:", error);
-                    });
-                });
+    let form = document.getElementById("formeditcargos");
+    
+    if (!form.checkValidity()) {
+        form.classList.add("was-validated");
+        return;
+    }
+    
+    let formData = new FormData(form);
+    let cargoId = form.querySelector('input[name="cargo_id"]').value;
+    
+    fetch(`/cargos/${cargoId}`, {
+        method: "PUT",
+        headers: {
+            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
+            // Removemos el Content-Type para que FormData funcione correctamente
+        },
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            toastr.success(data.message);
+            location.reload();
+        } else {
+            toastr.error(data.message || "Hubo un error al actualizar el cargo.");
+        }
+    })
+    .catch(error => {
+        toastr.error("Error en el servidor.");
+        console.error("Error:", error);
+    });
+});
 
                 document.addEventListener("change", function (event) {
-                    if (event.target && event.target.id === "departamento") { 
-                        const departamentoId = event.target.value;
-                        const ciudadSelect = document.getElementById("ciudad");
+                    if (event.target && event.target.id === "empleado_id") { 
+                        const Idemple = event.target.value;
+                        const identificacionva = document.getElementById("identificacion");
 
-                        if (departamentoId) {
-                            fetch(`/ciudades/${departamentoId}`)
+                        if (Idemple) {
+                            
+                            fetch(`/cargos/${Idemple}/empleados`)
                                 .then(response => response.json())
                                 .then(data => {
-                                    ciudadSelect.innerHTML = '<option selected disabled>Selecciona una ciudad</option>';
-                                    data.forEach(ciudad => {
-                                        let option = document.createElement("option");
-                                        option.value = ciudad.id;
-                                        option.textContent = ciudad.nombre;
-                                        ciudadSelect.appendChild(option);
-                                    });
+                                  console.log(identificacionva)
+                                  identificacionva.value=data.identificacion;
                                 })
-                                .catch(error => console.error("Error al obtener las ciudades:", error));
+                                .catch(error => console.error("Error al obtener:", error));
                         } else {
-                            ciudadSelect.innerHTML = '<option selected disabled>Selecciona una ciudad</option>';
+                            identificacionva.value=  '';
                         }
                     }
 
-                    if (event.target && event.target.id === "departamentoE") { 
-                        const departamentoId = event.target.value;
-                        const ciudadSelect = document.getElementById("ciudadE");
+                    if (event.target && event.target.id === "empleado_idE") { 
+                        const Idemple = event.target.value;
+                        const identificacionva = document.getElementById("identificacionE");
 
-                        if (departamentoId) {
-                            fetch(`/ciudades/${departamentoId}`)
+                        if (Idemple) {
+                            
+                            fetch(`/cargos/${Idemple}/empleados`)
                                 .then(response => response.json())
                                 .then(data => {
-                                    ciudadSelect.innerHTML = '<option selected disabled>Selecciona una ciudad</option>';
-                                    data.forEach(ciudad => {
-                                        let option = document.createElement("option");
-                                        option.value = ciudad.id;
-                                        option.textContent = ciudad.nombre;
-                                        ciudadSelect.appendChild(option);
-                                    });
+                                  console.log(identificacionva)
+                                  identificacionva.value=data.identificacion;
                                 })
-                                .catch(error => console.error("Error al obtener las ciudades:", error));
+                                .catch(error => console.error("Error al obtener:", error));
                         } else {
-                            ciudadSelect.innerHTML = '<option selected disabled>Selecciona una ciudad</option>';
+                            identificacionva.value=  '';
                         }
                     }
                     
@@ -390,10 +386,10 @@ $('#tablaEmpleados').DataTable({
 
 })
 
-            function EditarEmpleado(id) {
+            function EditarCargo(id) {
             
                         $.ajax({
-                            url: '/empleados/' + id + '/edit',
+                            url: '/cargos/' + id + '/edit',
                             type: 'GET',
                             success: function(response) {
                                 $('#modal-bodyEdit').html(response);
@@ -431,7 +427,7 @@ function Deleempleado(id, nombre) {
     <i class="fa fa-download"></i> Descargar datos
 </a>
             </div>
-            <a  id="create-empleado" data-toggle="modal" data-target="#modalcreate" class="btn btn-primary" style="
+            <a  id="create-cargo" data-toggle="modal" data-target="#modalcreate" class="btn btn-primary" style="
     color: white;
 ">
                 <i class="fa fa-plus"></i> Agregar
@@ -525,7 +521,7 @@ function Deleempleado(id, nombre) {
                                 <td>{{ $cargo->jefe }}</td>
                                 <td>
                                     <div class="d-flex gap-2">
-                                        <a  class="btn-action"  onclick="EditarEmpleado('{{ $cargo->id }}')" >
+                                        <a  class="btn-action"  onclick="EditarCargo('{{ $cargo->id }}')" >
                                             <i class="fa fa-edit"></i>
                                         </a>
                                        
@@ -551,7 +547,7 @@ function Deleempleado(id, nombre) {
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Nuevo empleado</h5>
+                <h5 class="modal-title">Nuevo cargo</h5>
                 <button type="button" class="btn-close"  data-dismiss="modal" aria-label="Close" ></button>
             </div>
             <div class="modal-body" id="modal-body">
@@ -559,7 +555,7 @@ function Deleempleado(id, nombre) {
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary" id="saveempleado">Guardar</button>
+                <button type="button" class="btn btn-primary" id="savecargo">Guardar</button>
             </div>
         </div>
     </div>
@@ -570,7 +566,7 @@ function Deleempleado(id, nombre) {
         <div class="modal-dialog">
                     <div class="modal-content">
                                 <div class="modal-header" style="background-color: #4040ff;  color: white; ">
-                                    <h5 class="modal-title" style="color: white;">Editar Empleado</h5>
+                                    <h5 class="modal-title" style="color: white;">Editar cargo</h5>
                                         <button type="button" class="btn-close"  data-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                     <div class="modal-body" id="modal-bodyEdit">
@@ -578,7 +574,7 @@ function Deleempleado(id, nombre) {
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-dismiss="modal" aria-label="Close" >Cancelar</button>
-                                        <button type="button" class="btn btn-primary" id="Editarempleado">Guardar</button>
+                                        <button type="button" class="btn btn-primary" id="Editarcargos">Guardar</button>
                                     </div>
                     </div>
             </div>
