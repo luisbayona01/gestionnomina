@@ -5,6 +5,8 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\EmpleadoController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\CargoController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -28,6 +30,5 @@ Route::get('/empleados', [EmpleadoController::class, 'index'])->name('empleados.
 Route::get('/empleados/{id}/edit', [EmpleadoController::class, 'edit'])->name('empleados.edit');
 Route::post('/empleados/update', [EmpleadoController::class, 'update'])->name('empleados.update');
 Route::get('/empleados/eliminar/{id}', [EmpleadoController::class, 'destroy'])->name('empleados.eliminar');
-
-
 Route::get('generar-informe-empleados', [ReportController::class, 'generarInforme'])->name('generar-informe-empleados');
+Route::resource('cargos', CargoController::class);

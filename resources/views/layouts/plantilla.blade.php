@@ -73,7 +73,7 @@
 
                                 <li class="sidebar-item"><a class="sidebar-link" href="{{ url('/empleados') }}">Empleados </a></li>
                                 <li class="sidebar-item"><a class="sidebar-link"
-                                        href="{{ url('/categoriaproductos') }}">cargos </a>
+                                        href="{{ url('/cargos') }}">cargos </a>
                                 </li>
                             </ul>
 

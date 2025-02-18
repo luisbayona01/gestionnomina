@@ -7,22 +7,23 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Cargo;  // Si tienes un modelo Cargo
 use Illuminate\Support\Facades\DB;
+use  App\Models\Empleado;
 
 class CargoController extends Controller
 {
     // Método para listar todos los cargos con los empleados y roles
     public function index()
     {
-        $empleados = DB::table('cargos as C')
+        $cargos = DB::table('cargos as C')
             ->join('empleado_cargo as Ec', 'Ec.cargo_id', '=', 'C.id')
             ->join('empleados as E', 'E.id', '=', 'Ec.empleado_id')
             ->join('users as U', 'U.id', '=', 'E.user_id')
             ->join('roles as R', 'R.id', '=', 'U.role_id')
-            ->where('E.activo', 1)  // Filtro para empleados activos
+            //->where('E.activo', 1)  // Filtro para empleados activos
             ->select('C.id', 'E.nombres', 'E.identificacion', 'C.area', 'C.nombre as cargos', 'R.name as rol', 'E.jefe')
             ->get();
-
-        return view('cargos.index', compact('empleados'));  // Asumiendo que tienes una vista `index.blade.php`
+     //dd($empleados);
+        return view('cargos.index', compact('cargos'));  // Asumiendo que tienes una vista `index.blade.php`
     }
 
     // Método para mostrar un solo cargo con detalles
@@ -34,8 +35,9 @@ class CargoController extends Controller
 
     // Método para mostrar el formulario de creación
     public function create()
-    {
-        return view('cargos.create');  // Crear vista de formulario
+    {     
+        $empleado= Empleado::all();
+        return view('cargos.create',compact('empleado'));  // Crear vista de formulario
     }
 
     // Método para almacenar un nuevo cargo
@@ -78,5 +80,10 @@ class CargoController extends Controller
         $cargo = Cargo::find($id);
         $cargo->delete();  // Eliminar cargo
         return redirect()->route('cargos.index')->with('success', 'Cargo eliminado exitosamente.');
+    }
+
+    public  function empleadosid($id){
+
+
     }
 }

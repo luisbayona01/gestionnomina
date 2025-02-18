@@ -508,7 +508,7 @@ function Deleempleado(id, nombre) {
                             </td>
                                 <td></td>
                             </tr>
-                            @foreach($empleados as $empleado)
+                            @foreach($cargos as $cargo)
                             <tr>
                                
                                 <td></td>
@@ -517,19 +517,19 @@ function Deleempleado(id, nombre) {
                                         <input class="form-check-input empleado-checkbox" type="checkbox">
                                     </div>
                                 </td>
-                                <td>{{ $empleado->nombres }}</td>
-                                <td>{{ $empleado->identificacion }}</td>
-                                <td>{{ $empleado->direccion }}</td>
-                                <td>{{ $empleado->telefono }}</td>
-                                <td>{{ $empleado->ciudad }}</td>
-                                <td>{{ $empleado->departamento }}</td>
+                                <td>{{ $cargo->nombres }}</td>
+                                <td>{{ $cargo->identificacion }}</td>
+                                <td>{{ $cargo->area }}</td>
+                                <td>{{ $cargo->cargos }}</td>
+                                <td>{{ $cargo->rol }}</td>
+                                <td>{{ $cargo->jefe }}</td>
                                 <td>
                                     <div class="d-flex gap-2">
-                                        <a  class="btn-action"  onclick="EditarEmpleado('{{ $empleado->id }}')" >
+                                        <a  class="btn-action"  onclick="EditarEmpleado('{{ $cargo->id }}')" >
                                             <i class="fa fa-edit"></i>
                                         </a>
                                        
-                                            <button type="button" class="btn-action" onclick="Deleempleado('{{ $empleado->id }}', '{{ $empleado->nombres }}')">
+                                            <button type="button" class="btn-action" onclick="Deleempleado('{{ $cargo->id }}', '{{ $cargo->cargos }}')">
                                                 <i class="fa fa-trash"></i>
                                             </button>
                                         </form>
