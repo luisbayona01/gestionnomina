@@ -16,7 +16,7 @@ class NewEmployeeNotification extends Notification
     protected $password;
 
     public function __construct(Empleado $empleado, $isAdmin = false, $password = null)
-    {
+    {   
         $this->empleado = $empleado;
         $this->isAdmin = $isAdmin;
         $this->password = $password;
@@ -50,15 +50,17 @@ class NewEmployeeNotification extends Notification
 
     private function toEmployeeMail()
     {
-        return (new MailMessage)
-            ->subject('Bienvenido a la Empresa')
-            ->greeting('Hola ' . $this->empleado->nombres . ',')
-            ->line('¡Bienvenido a nuestro sistema!')
-            ->line('Tus credenciales de acceso son:')
-            ->line('Email: ' . $this->empleado->user->email)
-            ->line('Contraseña: ' . $this->password)
-            ->line('Por favor, cambia tu contraseña después del primer inicio de sesión.')
-            ->action('Iniciar Sesión', url('/login'))
-            ->line('Si tienes alguna pregunta, no dudes en contactar a tu supervisor.');
+        $user = $this->empleado->user; 
+
+    return (new MailMessage)
+        ->subject('Bienvenido a la Empresa')
+        ->greeting('Hola ' . $this->empleado->nombres . ',')
+        ->line('¡Bienvenido a nuestro sistema!')
+        ->line('Tus credenciales de acceso son:')
+        ->line('Email: ' . ($user ? $user->email : 'No asignado'))
+        ->line('Contraseña: ' . $this->password)
+        ->line('Por favor, cambia tu contraseña después del primer inicio de sesión.')
+        ->action('Iniciar Sesión', url('/login'))
+        ->line('Si tienes alguna pregunta, no dudes en contactar a tu supervisor.');
     }
 }

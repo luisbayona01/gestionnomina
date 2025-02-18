@@ -35,5 +35,10 @@ class Empleado extends Model
         return $this->belongsTo(Ciudad::class);
     }
 
+    public function user()
+{
+    return $this->belongsTo(User::class, 'user_id');
+}
+
    
 }
